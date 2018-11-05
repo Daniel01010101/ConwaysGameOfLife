@@ -6,6 +6,7 @@ window.onload = function() {
 
 let running;
 let grid;
+let isInitialTick = true;
 let canvasDimension = 500;
 let cellDimensions = 10;
 let cellsPerRow = canvasDimension/cellDimensions;
@@ -29,6 +30,15 @@ function stop(){
 
 function populateGrid(){
     if(grid != null){
+
+        if(!isInitialTick){ // refactor check temp solution
+            grid.forEach(cell => {
+                determineFuture(cell);
+            });
+        }
+
+        isInitialTick = false;
+
         grid.forEach(cell => {
             drawCell(cell);
         });
@@ -46,10 +56,11 @@ function createGrid(numberOfGridCells){
     //let cellLiveState = false;
 
     for (var i = 0; i < grid.length; i++) {
-        grid[i] = new Array(3);
+        grid[i] = new Array(4);
         grid[i][0] = x;
         grid[i][1] = y;
         grid[i][2] = false;
+        assignCellCenterCoordinates(grid[i]);
 
         x += cellDimensions;
 
@@ -70,6 +81,39 @@ function drawCell(cell){
     }
 }
 
+function determineFuture(cell){
+
+    let neighbourImageData = new Array();
+    
+    neighbourImageData.push(ctx.getImageData(cell[3][0]+cellDimensions,cell[3][1], canvasDimension, canvasDimension).data); // north neighbour
+    neighbourImageData.push(ctx.getImageData(cell[3][0]+cellDimensions,cell[3][1], canvasDimension, canvasDimension).data); // north neighbour
+    neighbourImageData.push(ctx.getImageData(cell[3][0]+cellDimensions,cell[3][1], canvasDimension, canvasDimension).data); // north neighbour
+    neighbourImageData.push(ctx.getImageData(cell[3][0]+cellDimensions,cell[3][1], canvasDimension, canvasDimension).data); // north neighbour
+    neighbourImageData.push(ctx.getImageData(cell[3][0]+cellDimensions,cell[3][1], canvasDimension, canvasDimension).data); // north neighbour
+    neighbourImageData.push(ctx.getImageData(cell[3][0]+cellDimensions,cell[3][1], canvasDimension, canvasDimension).data); // north neighbour
+    neighbourImageData.push(ctx.getImageData(cell[3][0]+cellDimensions,cell[3][1], canvasDimension, canvasDimension).data); // north neighbour
+    neighbourImageData.push(ctx.getImageData(cell[3][0]+cellDimensions,cell[3][1], canvasDimension, canvasDimension).data); // north neighbour
+
+    let numberOfAliveNeighbors = getNumberOfAliveNeighbors(neighbourImageData);
+
+    if(numberOfAliveNeighbors == 3){
+        cell[2] = true;
+    }
+    else if(numberOfAliveNeighbors < 3){
+        cell[2] = false;
+    }
+    else if(numberOfAliveNeighbors > 3){
+        cell[2] = false;
+    }
+}
+
+function getNumberOfAliveNeighbors(imgDataArray){
+    let numberOfAliveNeighbors = 0;
+    for(let i=0;imgDataArray.length<0;i++){
+
+    }
+}
+
 function clearGrid(){
     ctx.clearRect(0, 0, c.width, c.height); 
 }
@@ -80,6 +124,12 @@ function setGridStartTemplate(grid){
     grid[1275][2] = true;
     grid[1276][2] = true;
     grid[1375][2] = true;
+}
+
+function assignCellCenterCoordinates(cell){
+    cell[3] = new Array(2);
+    cell[3][0] = (cell[0] + (cellDimensions/2)); // cellCenterCoordinates(x)
+    cell[3][1] = (cell[1] + (cellDimensions/2)); // cellCenterCoordinates(y)
 }
 
 // function getRandomInt(max) {
