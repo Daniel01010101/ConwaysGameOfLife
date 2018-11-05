@@ -8,8 +8,8 @@ let running;
 let grid;
 let canvasDimension = 500;
 let cellDimensions = 10;
-let cellsPerLine = canvasDimension/cellDimensions;
-let numberOfGridCells = cellsPerLine*cellsPerLine;
+let cellsPerRow = canvasDimension/cellDimensions;
+let numberOfGridCells = cellsPerRow*cellsPerRow;
 
 function initialise(){
     grid = createGrid(numberOfGridCells);
